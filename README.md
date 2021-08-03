@@ -83,6 +83,7 @@ Host the website on the service of your choice (Github Pages, zeit, Heroku, AWS,
 - Make the app public. Deploy it using the service of your choice
 - Create a pull request
 - Please complete your working solution within 7 days of receiving this challenge, and be sure to notify us (nishant@concular.com) when it is ready for review.
+- - If you have any questions related to this coding challenge please write to Nishant /He/Him (nishant@concular.com)
 
 ## License
 
