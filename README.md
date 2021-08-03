@@ -9,6 +9,35 @@ Let's consider Concular is planning to launch a simple 1 page Market Place websi
 
 You can find all website wireframe on Miro. Here is wireframe link 👉 https://miro.com/app/board/o9J_lJ2iPuA=/
 
+# API Endpoint
+
+```
+   POST https://asterix-dev.concular.com/material-service/marketplace/mp
+   
+```
+
+#### Request Body
+```
+   {
+        "cursor": 0,  // pointer for records so in an initial call you would send 0 and in a subsequent call you would send cursor which you would receive from API response
+        "limit": 2  // limit coulbe be number of records that you want to fetch it could be 1,2,3,4..... my advice would be setting it 5 or 10 
+   }
+```
+
+#### Response Body
+[Sample Response](https://github.com/Concular/coding-challenge-frontend-react/blob/main/sample-response.json)
+
+In response you would also get 
+
+```
+        "meta": {
+            "hasMoreData": true,
+            "cursor": 60
+        }
+```
+
+which has information about `cursor` for the next chunk of records and `hasMoreData` properties which tells you whether next chunk of records exist in database or not. You can use this field to show the load more button.  
+
 
 ## Product Requirements
 
