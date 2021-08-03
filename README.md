@@ -47,7 +47,7 @@ As a market place user:
 
   - [ ] I want to see a list of product on the market place web page.
   - [ ] For each product
-      - [ ] I want to see product default image if available.
+      - [ ] I want to see product image if available. (hint: You can pick first image form images list of product)
       - [ ] Product title or name    
   - [ ] I want to see the first 10 product, with the ability to - paginate (10 product per page) by clicking on Load more button.
   - [ ] I want to see Load More button only when more product exist.
