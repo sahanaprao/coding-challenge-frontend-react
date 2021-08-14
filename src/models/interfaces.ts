@@ -16,3 +16,18 @@ export type ProductAction =  {
     errorMessage: string,
     type: 'ERROR'
 }
+
+export interface State {
+    products: any[]
+}
+
+export type Action = {
+    type: 'SEARCH',
+    text: string
+}
+
+export interface ProductcontextObj {
+    products: any[],
+    searchKey: string,
+    searchProduct?: (text: string) => void 
+};
