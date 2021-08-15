@@ -1,6 +1,6 @@
 .image {
     width: 12rem;
-    height: 12rem;
+    height: 10rem;
 }
 
 .card {
@@ -14,4 +14,12 @@
     flex: 1 1 auto;
     flex-direction: column;
     padding: 1rem;
+}
+
+p {
+    margin:0;
+    text-align: center;
+    color: #262c2c;
+    font-size: 1rem;
+    font-weight: bold;
 }

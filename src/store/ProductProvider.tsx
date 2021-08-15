@@ -6,25 +6,27 @@ import ProductContext from './product-context';
 
 import { State,  Action } from '../models/interfaces';
 
-import useHttp from '../hooks/useHttp';
 import { getAllProducts } from '../lib/api';
 
 const defaultProductState: ProductcontextObj = {
     products: [],
+    originalProducts:[],
     searchKey: ''
 }
 
 const productReducer = (state: State, action: Action) => {
     if(action.type === 'SEARCH') {
-        const filteredProducts = state.products.filter((product) => product.product_name.toLowerCase().includes(action.text.toLowerCase()))
+        const filteredProducts = state.originalProducts.filter((product) => product.product_name.toLowerCase().includes(action.text.toLowerCase()))
        
         return {
             products: filteredProducts,
+            originalProducts: state.originalProducts,
             searchKey: action.text
         }
     } else if(action.type === 'SET') {
         return {
             products: action.products,
+            originalProducts: action.products,
             searchKey: state.searchKey
         }
     }
@@ -37,10 +39,11 @@ const ProductProvider:React.FC = (props) => {
         const fetchProducts = async() => {
             const requestBody: requestBody = {
                 "cursor": 0,
-                "limit": 2 
+                "limit": 10 
             };
 
             const data= await getAllProducts(requestBody);
+
             dispaltchProductAction({type: 'SET',products:data.data.data});
         }
 
@@ -50,6 +53,7 @@ const ProductProvider:React.FC = (props) => {
 
     const [ productState, dispaltchProductAction ] = useReducer(productReducer, {
         products:[],
+        originalProducts:[],
         searchKey:''
         });
 
@@ -63,6 +67,7 @@ const ProductProvider:React.FC = (props) => {
 
     const context = {
         products: productState.products,
+        originalProducts: productState.products,
         searchKey : productState.searchKey,
         searchProduct : searchProduct,
         setProducts: setProducts

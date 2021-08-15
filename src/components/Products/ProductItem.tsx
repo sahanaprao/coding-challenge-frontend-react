@@ -10,7 +10,6 @@ const ProductItem:React.FC<{product: Product}> = (props) => {
                 <img src={props.product.images[0].object_url} alt="product_group_name" className={classes.image} />
                 <div className={classes.content}>
                     <p> { props.product.product_name } </p>
-                    <p><strong>Amount:</strong> { props.product.total_amount}</p>
                 </div>
             </div>
         </Card>
