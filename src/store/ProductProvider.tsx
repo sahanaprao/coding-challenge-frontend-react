@@ -5,13 +5,15 @@ import { ProductcontextObj } from '../models/interfaces';
 import ProductContext from './product-context';
 
 import { State,  Action } from '../models/interfaces';
+import { Product } from '../lib/api';
 
 import { getAllProducts } from '../lib/api';
 
 const defaultProductState: ProductcontextObj = {
     products: [],
     originalProducts:[],
-    searchKey: ''
+    searchKey: '',
+    meta: { cursor :0 , hasMoreData: true }
 }
 
 const productReducer = (state: State, action: Action) => {
@@ -21,12 +23,14 @@ const productReducer = (state: State, action: Action) => {
         return {
             products: filteredProducts,
             originalProducts: state.originalProducts,
+            meta: state.meta,
             searchKey: action.text
         }
     } else if(action.type === 'SET') {
         return {
             products: action.products,
             originalProducts: action.products,
+            meta: action.meta,
             searchKey: state.searchKey
         }
     }
@@ -38,13 +42,13 @@ const ProductProvider:React.FC = (props) => {
     useEffect(() => {
         const fetchProducts = async() => {
             const requestBody: requestBody = {
-                "cursor": 0,
-                "limit": 10 
+                cursor: 0,
+                limit: 10 
             };
 
             const data= await getAllProducts(requestBody);
 
-            dispaltchProductAction({type: 'SET',products:data.data.data});
+            dispaltchProductAction({type: 'SET',products:data.data.data, meta: data.data.meta});
         }
 
         fetchProducts();
@@ -54,6 +58,7 @@ const ProductProvider:React.FC = (props) => {
     const [ productState, dispaltchProductAction ] = useReducer(productReducer, {
         products:[],
         originalProducts:[],
+        meta: { cursor :0 , hasMoreData: true },
         searchKey:''
         });
 
@@ -61,8 +66,8 @@ const ProductProvider:React.FC = (props) => {
         dispaltchProductAction({type: 'SEARCH',text:text});
     }
     
-    const setProducts = () => {
-        dispaltchProductAction({type: 'SET',products:initialProducts});
+    const setProducts = (products: Product, meta: Meta) => {
+        dispaltchProductAction({type: 'SET',products:products, meta: meta});
     } 
 
     const context = {
@@ -70,7 +75,8 @@ const ProductProvider:React.FC = (props) => {
         originalProducts: productState.products,
         searchKey : productState.searchKey,
         searchProduct : searchProduct,
-        setProducts: setProducts
+        setProducts: setProducts,
+        meta: productState.meta
     }
 
     return (

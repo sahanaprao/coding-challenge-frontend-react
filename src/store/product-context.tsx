@@ -6,6 +6,7 @@ const ProductContext = React.createContext<ProductcontextObj>({
     products: [],
     originalProducts: [],
     searchKey: '',
+    cursor: 0,
     searchProduct: (text: string) => {},
     setProducts: () => {}
 })

@@ -29,5 +29,7 @@ export type Action = {
 export interface ProductcontextObj {
     products: any[],
     searchKey: string,
-    searchProduct?: (text: string) => void 
+    cursor: number,
+    searchProduct?: (text: string) => void,
+    setProduct?: (product: Product) => void
 };
