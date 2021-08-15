@@ -10,7 +10,7 @@ import { requestBody } from '../../models/interfaces';
 
 const ProductList = () => {
 
-    const { sendRequest , status , data, error} = useHttp(getAllProducts, true);
+    const { sendRequest , status , data: LoadedProducts, error} = useHttp(getAllProducts, true);
 
     useEffect(() => {
     const requestBody: requestBody = {
@@ -20,10 +20,22 @@ const ProductList = () => {
         sendRequest(requestBody);
     },[sendRequest]);
 
+    if(status === 'pending') {
+         return (
+            <div>
+
+            </div>
+        );
+    }
+
+    if(status === 'completed') {
+      return <div className={classes.container}>
+        { LoadedProducts.data.data.map((product) => <ProductItem product={product} key={product.id}/> )}
+    </div>
+    }
+
     return (
-    <div className={classes.clear}>
-        <ProductItem />
-    </div>   
+       <div></div>
     );
 }
 

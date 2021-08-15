@@ -1,14 +1,19 @@
 import classes from './ProductItem.module.css';
 
-const ProductItem = () => {
+import {Product} from '../../models/products';
+import Card from '../UI/Card/Card';
+
+const ProductItem:React.FC<{product: Product}> = (props) => {
     return (
-        <div>
-            <img src="" alt="product_group_name" className={classes.image} />
-            <div>
-                <p>product_name</p>
-                <p><strong>Amount:</strong> total_amount</p>
+        <Card>
+            <div className={classes.card}>
+                <img src={props.product.images[0].object_url} alt="product_group_name" className={classes.image} />
+                <div className={classes.content}>
+                    <p> { props.product.product_name } </p>
+                    <p><strong>Amount:</strong> { props.product.total_amount}</p>
+                </div>
             </div>
-        </div>
+        </Card>
     );
 }
 
