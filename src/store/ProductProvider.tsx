@@ -13,6 +13,8 @@ const defaultProductState: ProductcontextObj = {
     products: [],
     originalProducts:[],
     searchKey: '',
+    status: '',
+    error: '',
     meta: { cursor :0 , hasMoreData: true }
 }
 
@@ -31,7 +33,9 @@ const productReducer = (state: State, action: Action) => {
             products: action.products,
             originalProducts: action.products,
             meta: action.meta,
-            searchKey: state.searchKey
+            searchKey: state.searchKey,
+            error: action.error,
+            status: action.status
         }
     }
     return defaultProductState;
@@ -40,24 +44,41 @@ const productReducer = (state: State, action: Action) => {
 const ProductProvider:React.FC = (props) => {
 
     useEffect(() => {
+
         const fetchProducts = async() => {
             const requestBody: requestBody = {
                 cursor: 0,
                 limit: 10 
             };
 
-            const data= await getAllProducts(requestBody);
-
-            dispaltchProductAction({type: 'SET',products:data.data.data, meta: data.data.meta});
+            return  await getAllProducts(requestBody);
         }
 
-        fetchProducts();
+        const getProducts = async () => {
+            dispaltchProductAction({ type:'SET', status: 'PENDING' , products:[], meta: {}});
+            try {
+                const responseData = await fetchProducts();
+
+                dispaltchProductAction({ type: 'SET', status: 'SUCCESS',products:responseData.data.data, meta: responseData.data.meta });
+            } catch (error) {
+                dispaltchProductAction({
+                    type: 'SET',
+                status: 'ERROR',
+                errorMessage: error.message || 'Something went wrong!',
+                products:[], meta: {}
+                });
+            }
+        }
+
+        getProducts();
     
     },[]);
 
     const [ productState, dispaltchProductAction ] = useReducer(productReducer, {
         products:[],
         originalProducts:[],
+        status:'',
+        error:'',
         meta: { cursor :0 , hasMoreData: true },
         searchKey:''
         });
@@ -66,17 +87,19 @@ const ProductProvider:React.FC = (props) => {
         dispaltchProductAction({type: 'SEARCH',text:text});
     }
     
-    const setProducts = (products: Product, meta: Meta) => {
-        dispaltchProductAction({type: 'SET',products:products, meta: meta});
+    const setProducts = (products: Product, meta: Meta, status: string, error: string) => {
+        dispaltchProductAction({type: 'SET',products:products, meta: meta, status: status, error: error});
     } 
 
     const context = {
         products: productState.products,
         originalProducts: productState.products,
+        status:productState.status,
+        error: productState.error,
+        meta: productState.meta,
         searchKey : productState.searchKey,
         searchProduct : searchProduct,
-        setProducts: setProducts,
-        meta: productState.meta
+        setProducts: setProducts
     }
 
     return (

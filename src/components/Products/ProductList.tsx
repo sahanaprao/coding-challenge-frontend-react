@@ -1,6 +1,7 @@
 import React,{ useContext } from 'react';
 
 import ProductItem from './ProductItem';
+import LoadingSpinner from '../UI/Spinner/LoadingSpinner';
 
 import classes from './ProductList.module.css';
 import ProductContext from '../../store/product-context';
@@ -20,21 +21,37 @@ const ProductList = () => {
             limit: 10 
         };
 
-        const data= await getAllProducts(requestBody);
-        productCtx.setProducts(data.data.data, data.data.meta);
+        return await getAllProducts(requestBody);
     }
 
+    const getProducts = async () => {
+        productCtx.setProducts([], {}, 'PENDING'); 
+        try {
+            const responseData = await fetchProducts();
+            productCtx.setProducts(responseData.data.data, responseData.data.meta, 'SUCCESS' ); 
+        } catch (error) {
+            productCtx.setProducts([], {}, 'ERRPR', error.message || 'Something went wrong!' ); 
+        }
+    }
 
     const onPrevious = () => {
-        fetchProducts();
+        getProducts();
     }
 
     const onNext = () => {
-        fetchProducts();
+        getProducts();
     }
 
+    if(productCtx.status === 'PENDING') {
+        console.log(productCtx.status);
+        return (
+            <div className={classes.loadingCentered}>
+                <LoadingSpinner />
+            </div>
+        ); 
+    }
 
-    if(!productCtx.products.length) {
+    if(productCtx.status === 'completed' && !productCtx.products.length) {
         return (
                 <div className={`${classes.container} ${classes.noProducts}`}>
                     <p className={classes.centered}>No data available</p>
