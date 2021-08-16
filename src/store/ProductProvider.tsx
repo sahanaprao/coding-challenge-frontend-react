@@ -55,16 +55,16 @@ const ProductProvider:React.FC = (props) => {
         }
 
         const getProducts = async () => {
-            dispaltchProductAction({ type:'SET', status: 'PENDING' , products:[], meta: {}});
+            dispatchAction({ type:'SET', status: 'PENDING' , products:[], meta: {}});
             try {
                 const responseData = await fetchProducts();
 
-                dispaltchProductAction({ type: 'SET', status: 'SUCCESS',products:responseData.data.data, meta: responseData.data.meta });
+                dispatchAction({ type: 'SET', status: 'SUCCESS',products:responseData.data.data, meta: responseData.data.meta });
             } catch (error) {
-                dispaltchProductAction({
+                dispatchAction({
                     type: 'SET',
                 status: 'ERROR',
-                errorMessage: error.message || 'Something went wrong!',
+                error: error.message || 'Something went wrong!',
                 products:[], meta: {}
                 });
             }
@@ -74,7 +74,7 @@ const ProductProvider:React.FC = (props) => {
     
     },[]);
 
-    const [ productState, dispaltchProductAction ] = useReducer(productReducer, {
+    const [ productState, dispatchAction ] = useReducer(productReducer, {
         products:[],
         originalProducts:[],
         status:'',
@@ -84,11 +84,11 @@ const ProductProvider:React.FC = (props) => {
         });
 
     const searchProduct = (text: string) => {
-        dispaltchProductAction({type: 'SEARCH',text:text});
+        dispatchAction({type: 'SEARCH',text:text});
     }
     
     const setProducts = (products: Product, meta: Meta, status: string, error: string) => {
-        dispaltchProductAction({type: 'SET',products:products, meta: meta, status: status, error: error});
+        dispatchAction({type: 'SET',products:products, meta: meta, status: status, error: error});
     } 
 
     const context = {

@@ -30,20 +30,15 @@ const ProductList = () => {
             const responseData = await fetchProducts();
             productCtx.setProducts(responseData.data.data, responseData.data.meta, 'SUCCESS' ); 
         } catch (error) {
-            productCtx.setProducts([], {}, 'ERRPR', error.message || 'Something went wrong!' ); 
+            productCtx.setProducts([], {}, 'ERROR', error.message || 'Something went wrong!' ); 
         }
     }
 
-    const onPrevious = () => {
-        getProducts();
-    }
-
-    const onNext = () => {
+    const onPrevNext = () => {
         getProducts();
     }
 
     if(productCtx.status === 'PENDING') {
-        console.log(productCtx.status);
         return (
             <div className={classes.loadingCentered}>
                 <LoadingSpinner />
@@ -51,12 +46,20 @@ const ProductList = () => {
         ); 
     }
 
-    if(productCtx.status === 'completed' && !productCtx.products.length) {
+    if((productCtx.status === 'SUCCESS' && !productCtx.products.length) ||  (productCtx.searchKey && !productCtx.products.length)) {
         return (
                 <div className={`${classes.container} ${classes.noProducts}`}>
                     <p className={classes.centered}>No data available</p>
                 </div>
         );
+    }
+
+    if(productCtx.status === 'ERROR') {
+        return (
+                <div className={`${classes.container} ${classes.noProducts}`}>
+                    <p className={classes.centered}>{productCtx.error}</p>
+                </div>
+            );
     } 
 
     return (
@@ -64,10 +67,10 @@ const ProductList = () => {
             <div className={classes.container}>
                 { productCtx.products.map((product) => <ProductItem product={product} key={product.id}/> )}
             </div>
-            <div className={classes.buttons}>
-                <button className={classes.prevBtn} onClick={onPrevious} disabled={!hasCursor}>Previous</button>
-                <button onClick={onNext} disabled={!hasMoreData}>Next</button>
-            </div>
+            { productCtx.products.length ? <div className={classes.buttons} >
+                <button className={classes.prevBtn} onClick={onPrevNext} disabled={!hasCursor || ( productCtx.products.length < 9 && productCtx.searchKey)}>Previous</button>
+                <button onClick={onPrevNext} disabled={!hasMoreData ||  ( productCtx.products.length < 9 && productCtx.searchKey)}>Next</button>
+            </div> : null }
         </React.Fragment>
     );
 }
