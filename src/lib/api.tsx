@@ -1,16 +1,16 @@
-import { requestBody } from '../models/interfaces';
+import { RequestBody } from '../models/interfaces';
 
 const API_DOMAIN = 'https://asterix-dev.concular.com';
 
-export async function getAllProducts(requestData: requestBody) {
+export async function getAllProducts(requestData: RequestBody) {
   const response = await fetch(`${API_DOMAIN}/material-service/marketplace/mp`,{
-    method:'POST',
-    body: 
-      JSON.stringify(requestData),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+                                  method:'POST',
+                                  body: 
+                                    JSON.stringify(requestData),
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                  },
+                                });
   const data = await response.json();
 
   if (!response.ok) {

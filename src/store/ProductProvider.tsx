@@ -1,12 +1,9 @@
 import React, { useReducer, useEffect } from 'react';
 
-import { ProductcontextObj } from '../models/interfaces';
-
 import ProductContext from './product-context';
-
-import { State,  Action } from '../models/interfaces';
-import { Product } from '../lib/api';
-
+import { ProductcontextObj, State,  Action , RequestBody} from '../models/interfaces';
+import { PRDOUCT_LIMIT } from '../models/products';
+import { Product, Meta } from '../models/products';
 import { getAllProducts } from '../lib/api';
 
 const defaultProductState: ProductcontextObj = {
@@ -15,18 +12,22 @@ const defaultProductState: ProductcontextObj = {
     searchKey: '',
     status: '',
     error: '',
-    meta: { cursor :0 , hasMoreData: true }
+    meta: { cursor :0 , hasMoreData: true },
+    searchProduct: (text: string) => {},
+    setProducts: (product: Product[], meta: Meta, status: string, error: string) => {}
 }
 
 const productReducer = (state: State, action: Action) => {
     if(action.type === 'SEARCH') {
-        const filteredProducts = state.originalProducts.filter((product) => product.product_name.toLowerCase().includes(action.text.toLowerCase()))
+        const filteredProducts = state.originalProducts.filter((product) => product.product_name.toLowerCase().includes(action.searchKey.toLowerCase()))
        
         return {
             products: filteredProducts,
             originalProducts: state.originalProducts,
             meta: state.meta,
-            searchKey: action.text
+            searchKey: action.searchKey,
+            error: state.error,
+            status: state.status
         }
     } else if(action.type === 'SET') {
         return {
@@ -46,26 +47,45 @@ const ProductProvider:React.FC = (props) => {
     useEffect(() => {
 
         const fetchProducts = async() => {
-            const requestBody: requestBody = {
+            const requestBody: RequestBody = {
                 cursor: 0,
-                limit: 10 
+                limit: PRDOUCT_LIMIT
             };
 
             return  await getAllProducts(requestBody);
         }
 
         const getProducts = async () => {
-            dispatchAction({ type:'SET', status: 'PENDING' , products:[], meta: {}});
+            dispatchAction({ 
+                type:'SET', 
+                status: 'PENDING' , 
+                products:[], 
+                originalProducts: [], 
+                meta: {cursor:0, hasMoreData:  true}, 
+                error: '', 
+                searchKey:''
+            });
             try {
                 const responseData = await fetchProducts();
 
-                dispatchAction({ type: 'SET', status: 'SUCCESS',products:responseData.data.data, meta: responseData.data.meta });
+                dispatchAction({
+                     type: 'SET', 
+                     status: 'SUCCESS',
+                     products: responseData.data.data, 
+                     originalProducts: responseData.data.data, 
+                     meta: responseData.data.meta,
+                     error:'',
+                     searchKey:''
+                });
             } catch (error) {
                 dispatchAction({
                     type: 'SET',
-                status: 'ERROR',
-                error: error.message || 'Something went wrong!',
-                products:[], meta: {}
+                    status: 'ERROR',
+                    error: error.message || 'Something went wrong!',
+                    products:[], 
+                    originalProducts: [],  
+                    meta: {cursor:0, hasMoreData:  true},
+                    searchKey:''
                 });
             }
         }
@@ -74,21 +94,38 @@ const ProductProvider:React.FC = (props) => {
     
     },[]);
 
-    const [ productState, dispatchAction ] = useReducer(productReducer, {
-        products:[],
-        originalProducts:[],
-        status:'',
-        error:'',
-        meta: { cursor :0 , hasMoreData: true },
-        searchKey:''
-        });
+    const [ productState, dispatchAction ] = useReducer(productReducer, 
+                                                {
+                                                    products:[],
+                                                    originalProducts:[],
+                                                    status:'',
+                                                    error:'',
+                                                    meta: { cursor :0 , hasMoreData: true },
+                                                    searchKey:''
+                                                });
 
     const searchProduct = (text: string) => {
-        dispatchAction({type: 'SEARCH',text:text});
+        dispatchAction({
+            type: 'SEARCH',
+            searchKey:text,
+            status: '',
+            error: '',
+            products: [],
+            meta: {cursor:0, hasMoreData:  true},
+            originalProducts: []
+        });
     }
     
-    const setProducts = (products: Product, meta: Meta, status: string, error: string) => {
-        dispatchAction({type: 'SET',products:products, meta: meta, status: status, error: error});
+    const setProducts = (products: Product[], meta: Meta, status: string, error: string) => {
+        dispatchAction({
+            type: 'SET',
+            searchKey: '',
+            products:products, 
+            originalProducts: products,
+            meta: meta, 
+            status: status, 
+            error: error
+        });
     } 
 
     const context = {

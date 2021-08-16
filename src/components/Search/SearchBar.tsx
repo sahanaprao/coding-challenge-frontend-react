@@ -16,9 +16,11 @@ const SearchBar = () => {
 
     return (
         <div>
-            { ( productCtx.products.length || productCtx.searchKey) ? 
-                <input type="text" placeholder="Search by product name" className={classes.searchInput} ref={searchInput} onInput={searchHandler}/>
-                : null }
+            { 
+                ( productCtx.products.length || productCtx.searchKey) ? 
+                    <input type="text" placeholder="Search by product name" className={classes.searchInput} ref={searchInput} onInput={searchHandler}/>
+                    : null 
+            }
         </div>
     );
 }

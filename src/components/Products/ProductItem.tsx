@@ -1,6 +1,6 @@
 import classes from './ProductItem.module.css';
 
-import {Product} from '../../models/products';
+import { Product } from '../../models/products';
 import Card from '../UI/Card/Card';
 
 const ProductItem:React.FC<{product: Product}> = (props) => {

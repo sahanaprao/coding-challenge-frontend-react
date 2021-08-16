@@ -1,8 +1,6 @@
-export interface ProductState {
+import { Meta, Product } from './products';
 
-}
-
-export interface requestBody {
+export interface RequestBody {
     cursor: number
     limit: number
 }
@@ -18,18 +16,39 @@ export type ProductAction =  {
 }
 
 export interface State {
-    products: any[]
+    products: Product[],
+    originalProducts: Product[],
+    meta: Meta,
+    searchKey: string,
+    error: string,
+    status: string
 }
 
 export type Action = {
-    type: 'SEARCH',
-    text: string
-}
-
-export interface ProductcontextObj {
-    products: any[],
+    products: Product[],
+    originalProducts: Product[],
+    meta: Meta,
     searchKey: string,
-    cursor: number,
-    searchProduct?: (text: string) => void,
-    setProduct?: (product: Product) => void
+    error: string,
+    status: string,
+    type: 'SEARCH'
+} | {
+    products: Product[],
+    originalProducts: Product[],
+    meta: Meta,
+    searchKey: string,
+    error: string,
+    status: string,
+    type: 'SET'
+} 
+ 
+export interface ProductcontextObj {
+    products: Product[],
+    originalProducts: Product[],
+    error: string,
+    searchKey: string,
+    meta: Meta,
+    status: string,
+    searchProduct: (text: string) => void,
+    setProducts: (product: Product[], meta: Meta, status: string, error: string) => void
 };
