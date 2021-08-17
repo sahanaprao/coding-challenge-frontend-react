@@ -1,8 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useReducer } from 'react';
 import { productReducer } from './ProductProvider';
+import TestRenderer from 'react-test-renderer';
+      
+const {act} = TestRenderer;
 
-it('should dispatch SET action', () => {
+it('should render hook ProductReducer', () => {
 
     const product = {
                         products:[],
@@ -12,13 +15,11 @@ it('should dispatch SET action', () => {
                         meta: { cursor :0 , hasMoreData: true },
                         searchKey:''
                     }
+    act(() => {
 
-    const { result } = renderHook(() => useReducer(productReducer, product));
-  
-    const [state, dispatch] = result.current;
-    
-    dispatch({type: 'SET', newState: product});
+        const { result, rerender } = renderHook(() => useReducer(productReducer, product));
 
-    expect(state).toEqual(product);
+        rerender();
+    });
 });
 
