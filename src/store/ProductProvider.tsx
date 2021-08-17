@@ -17,7 +17,7 @@ const defaultProductState: ProductcontextObj = {
     setProducts: (product: Product[], meta: Meta, status: string, error: string) => {}
 }
 
-const productReducer = (state: State, action: Action) => {
+export const productReducer = (state: State, action: Action) => {
     if(action.type === 'SEARCH') {
         const filteredProducts = state.originalProducts.filter((product) => product.product_name.toLowerCase().includes(action.searchKey.toLowerCase()))
        
