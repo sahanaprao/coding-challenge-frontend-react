@@ -6,7 +6,6 @@ Concular Product place page developed using React.
 
 * Used React
 * The prodcut page is paginated with 10 items per page.
-* 
 
 # Running the application
 
@@ -27,5 +26,4 @@ npm test
 
 Use below link to see the deployed Product Place
 
-```https://product-place.herokuapp.com/
-```
+[here](https://product-place.herokuapp.com/)
